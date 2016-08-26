@@ -12,22 +12,25 @@ package developer.github.heap;
  *  -XX:HeapDumpPath=${dir}: dump文件路径
  *  -Xms1024m: 堆最小值为1024M
  *  -Xss10M: 每个线程的stack的大小10M
+ *
+ *
+ *  @Attention: 注意这个代码会让电脑死机, 建议在虚拟机run
  */
 public class JavaVMStackOOM {
 
-    private void notStop() {
-        while (true) {}
+    static class MyThread implements Runnable {
+        @Override
+        public void run() {
+            while (true) {}
+        }
     }
 
     public void stackLeakByThread() {
-        while (true) {
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    notStop();
-                }
-            });
-            thread.start();
+        while(true) {
+            MyThread runnable = new MyThread();
+            Thread runThread = new Thread(runnable);
+            System.out.println("running: " + runThread);
+            runThread.start();
         }
     }
 
